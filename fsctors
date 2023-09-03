@@ -1,28 +1,47 @@
 #!/usr/bin/python3
 
-def factorize(number):
-    factors = []
-    divisor = 2
-    while divisor <= number:
-        if number % divisor == 0:
-            factors.append(divisor)
-            number //= divisor
-        else:
-            divisor += 1
-    return factors
+""" Import necessary modules """
+import sys
+import time
 
+""" Function to factorize a given number into a product of two smaller numbers """
+def factorize_into_two_smaller_numbers(number):
+    p = 2
+    while p <= number // 2:
+        if number % p == 0:
+            q = number // p
+            return p, q
+        p += 1
+    return None
+
+""" Main function """
 def main():
-    input_file = "prime_numbers"
+    if len(sys.argv) != 2:
+        print("Usage: {} <file>".format(sys.argv[0]))
+        sys.exit(1)
+
+    input_file = sys.argv[1]
 
     try:
+        """ Open and read the input file """
         with open(input_file, 'r') as file:
+            start_time = time.time()
             for line in file:
                 number = int(line.strip())
-                factors = factorize(number)
-                factors_str = '{0}='.format(number) + '*'.join(map(str, factors))
-                print(factors_str)
+                factorization = factorize_into_two_smaller_numbers(number)
+
+                if factorization:
+                    p, q = factorization
+                    print("{}={}*{}".format(number, p, q))
+                else:
+                    print("{}=No factorization found".format(number))
+
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            print("Execution time: {:.4f} seconds".format(elapsed_time))
     except FileNotFoundError:
         print("Error: File '{0}' not found.".format(input_file))
 
+""" Entry point of the program """
 if __name__ == "__main__":
-    main()
+    main(
